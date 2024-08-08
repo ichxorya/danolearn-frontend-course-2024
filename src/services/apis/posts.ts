@@ -1,9 +1,33 @@
 import axios from "axios";
-import { GetPostsResponse } from "../../types/post";
+import { GetPostsResponse, Post, PostFieldType } from "../../types/post";
 
 const BASE_API_ENDPOINT = "https://training-program.dev.tekoapis.net/api/v1";
 
-export const getPosts = async (): Promise<GetPostsResponse> => {
+// C: Create.
+export const createPost = async (data: PostFieldType) => {
+  const res = await axios.post(`${BASE_API_ENDPOINT}/posts`, data);
+  return res.data;
+};
+
+// R: Read.
+export const getPosts = async (/** TODO: page & pageSize params */): Promise<GetPostsResponse> => {
   const res = await axios.get(`${BASE_API_ENDPOINT}/posts`);
   return res.data;
 };
+
+export const getPostById = async (id: number): Promise<Post> => {
+  const res = await axios.get(`${BASE_API_ENDPOINT}/posts/${id}`);
+  return res.data;
+};
+
+// U: Update.
+export const updatePost = async (data: Post) => {
+  const res = await axios.put(`${BASE_API_ENDPOINT}/posts/${data.id}`, (data.title, data.description));
+  return res.data;
+};
+
+// D: Delete.
+export const deletePost = async (id: number) => {
+  const res = await axios.delete(`${BASE_API_ENDPOINT}/posts/${id}`);
+  return res.data;
+}
