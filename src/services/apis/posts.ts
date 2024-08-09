@@ -11,8 +11,13 @@ export const createPost = async (data: PostFieldType) => {
 
 // R: Read.
 export const getPosts =
-  async (/** TODO: page & pageSize params */): Promise<GetPostsResponse> => {
-    const res = await axios.get(`${BASE_API_ENDPOINT}/posts`);
+  async (
+    page: number = 1,
+    pageSize: number = 12
+  ): Promise<GetPostsResponse> => {
+    const res = await axios.get(`${BASE_API_ENDPOINT}/posts`, {
+      params: { page, pageSize },
+    });
     return res.data;
   };
 

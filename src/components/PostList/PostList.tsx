@@ -1,4 +1,4 @@
-import { Button, List, Modal } from "antd";
+import { Button, List, Modal, Pagination } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import PostCard from "../PostCard";
 import { usePosts } from "../../hooks/post";
@@ -65,6 +65,7 @@ const PostList: React.FC = () => {
       <List
         pagination={{
           align: "center",
+          defaultPageSize: 12,
         }}
         grid={{
           gutter: 16,
