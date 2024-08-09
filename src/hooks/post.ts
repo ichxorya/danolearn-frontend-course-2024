@@ -4,7 +4,7 @@ import { getPosts } from "../services/apis/posts";
 
 export const usePosts = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loadingPosts, setLoadingPosts] = useState(false);
+  const [loadingPosts, setLoadingPosts] = useState<boolean>(false);
 
   const handleGetPosts = async () => {
     try {
@@ -23,5 +23,6 @@ export const usePosts = () => {
   return {
     posts,
     loadingPosts,
+    handleGetPosts
   };
 };

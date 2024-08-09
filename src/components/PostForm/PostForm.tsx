@@ -1,15 +1,17 @@
 import { Button, Form, FormProps, Input } from "antd";
 import { Post, PostFieldType } from "../../types/post";
 import { useEffect } from "react";
+import { createPost, updatePost } from "../../services/apis/posts";
 
 interface PostFormProps {
   handleAfterSuccess: () => void;
   postToEditData?: Post;
+  handleGetPosts: () => void;
 }
 
 const PostForm: React.FC<PostFormProps> = (props) => {
   const [form] = Form.useForm();
-  const { postToEditData, handleAfterSuccess } = props;
+  const { postToEditData, handleAfterSuccess, handleGetPosts } = props;
 
   useEffect(() => {
     if (postToEditData) {
@@ -22,12 +24,12 @@ const PostForm: React.FC<PostFormProps> = (props) => {
   }, [form, postToEditData]);
 
   const handleConfirmUpsert: FormProps<PostFieldType>["onFinish"] = async (
-    values
+    values: PostFieldType
   ) => {
     if (postToEditData) {
-      console.log("Update post with values:", values);
+      updatePost(postToEditData.id, values.title, values.description).then(() => handleGetPosts());
     } else {
-      console.log("Create a new post with values:", values);
+      createPost(values).then(() => handleGetPosts());
     }
 
     handleAfterSuccess();

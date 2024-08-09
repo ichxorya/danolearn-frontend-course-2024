@@ -10,10 +10,11 @@ export const createPost = async (data: PostFieldType) => {
 };
 
 // R: Read.
-export const getPosts = async (/** TODO: page & pageSize params */): Promise<GetPostsResponse> => {
-  const res = await axios.get(`${BASE_API_ENDPOINT}/posts`);
-  return res.data;
-};
+export const getPosts =
+  async (/** TODO: page & pageSize params */): Promise<GetPostsResponse> => {
+    const res = await axios.get(`${BASE_API_ENDPOINT}/posts`);
+    return res.data;
+  };
 
 export const getPostById = async (id: number): Promise<Post> => {
   const res = await axios.get(`${BASE_API_ENDPOINT}/posts/${id}`);
@@ -21,8 +22,15 @@ export const getPostById = async (id: number): Promise<Post> => {
 };
 
 // U: Update.
-export const updatePost = async (data: Post) => {
-  const res = await axios.put(`${BASE_API_ENDPOINT}/posts/${data.id}`, (data.title, data.description));
+export const updatePost = async (
+  id: number,
+  title: string,
+  description: string
+) => {
+  const res = await axios.put(`${BASE_API_ENDPOINT}/posts/${id}`, {
+    title,
+    description,
+  });
   return res.data;
 };
 
@@ -30,4 +38,4 @@ export const updatePost = async (data: Post) => {
 export const deletePost = async (id: number) => {
   const res = await axios.delete(`${BASE_API_ENDPOINT}/posts/${id}`);
   return res.data;
-}
+};

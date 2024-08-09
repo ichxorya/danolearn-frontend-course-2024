@@ -3,22 +3,25 @@ import { Card, Popconfirm, Typography } from "antd";
 import { Post } from "../../types/post";
 import "./PostCard.css";
 import { useState } from "react";
+import { deletePost } from "../../services/apis/posts";
 
 interface PostCardProps {
   post: Post;
   handleEditPost: (post: Post) => void;
   handleAfterSuccess: (isDeleted?: boolean) => void;
+  handleGetPosts: () => void;
 }
-
 const { Paragraph } = Typography;
 
 const PostCard: React.FC<PostCardProps> = (props) => {
-  const { post, handleEditPost, handleAfterSuccess } = props;
+  const { post, handleEditPost, handleAfterSuccess, handleGetPosts } = props;
+
   const [expanded, setExpanded] = useState(false);
 
   const handleConfirmDelete = () => {
-    console.log("Delete post with ID:", post.id);
-    handleAfterSuccess(true);
+    deletePost(post.id)
+      .then(() => handleAfterSuccess(true))
+      .then(() => handleGetPosts());
   };
 
   return (

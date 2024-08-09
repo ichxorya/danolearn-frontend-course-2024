@@ -2,14 +2,14 @@ import { Button, List, Modal } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import PostCard from "../PostCard";
 import { usePosts } from "../../hooks/post";
-import { useState } from "react";
+import { useState} from "react";
 import PostForm from "../PostForm";
 import { notification } from "antd";
 import { Post } from "../../types/post";
 
 const PostList: React.FC = () => {
-  const { posts, loadingPosts } = usePosts();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { posts, loadingPosts, handleGetPosts } = usePosts();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [postToEditData, setPostToEditData] = useState<Post>();
 
   const showModal = () => {
@@ -19,6 +19,7 @@ const PostList: React.FC = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
 
   const handleAfterSuccess = (isDeleted?: boolean) => {
     if (!isDeleted) closeModal();
@@ -58,6 +59,7 @@ const PostList: React.FC = () => {
         <PostForm
           postToEditData={postToEditData}
           handleAfterSuccess={handleAfterSuccess}
+          handleGetPosts={handleGetPosts}
         />
       </Modal>
       <List
@@ -81,6 +83,7 @@ const PostList: React.FC = () => {
               handleAfterSuccess={handleAfterSuccess}
               handleEditPost={handleEditPost}
               post={post}
+              handleGetPosts={handleGetPosts}
             />
           </List.Item>
         )}
