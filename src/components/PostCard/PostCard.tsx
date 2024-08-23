@@ -1,27 +1,33 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Card, Popconfirm, Typography } from "antd";
-import { Post } from "../../types/post";
-import "./PostCard.css";
+import { Card, Popconfirm, PopconfirmProps, Typography } from "antd";
 import { useState } from "react";
-import { deletePost } from "../../services/apis/posts";
+import { deletePost } from "services/apis/posts";
+import { Post } from "types/post";
+import "./PostCard.css";
 
 interface PostCardProps {
   post: Post;
-  handleEditPost: (post: Post) => void;
+  handleEditPost: (id: number) => void;
   handleAfterSuccess: (isDeleted?: boolean) => void;
-  handleGetPosts: () => void;
 }
+
 const { Paragraph } = Typography;
 
 const PostCard: React.FC<PostCardProps> = (props) => {
-  const { post, handleEditPost, handleAfterSuccess, handleGetPosts } = props;
-
+  const { post, handleEditPost, handleAfterSuccess } = props;
+  const [loadingDeletePost, setLoadingDeletePost] = useState<boolean>(false);
   const [expanded, setExpanded] = useState(false);
 
-  const handleConfirmDelete = () => {
-    deletePost(post.id)
-      .then(() => handleAfterSuccess(true))
-      .then(() => handleGetPosts());
+  const handleConfirmDelete: PopconfirmProps["onConfirm"] = async () => {
+    // Delete post
+    try {
+      setLoadingDeletePost(true);
+      await deletePost(post.id);
+    } finally {
+      setLoadingDeletePost(false);
+    }
+
+    handleAfterSuccess(true);
   };
 
   return (
@@ -29,7 +35,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
       className="post-card"
       title={`[${post.id}] ${post.title}`}
       actions={[
-        <EditOutlined key="edit" onClick={() => handleEditPost(post)} />,
+        <EditOutlined key="edit" onClick={() => handleEditPost(post.id)} />,
         <Popconfirm
           key="delete"
           title="Delete Post"
@@ -37,10 +43,14 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           onConfirm={handleConfirmDelete}
           okText="Confirm"
           cancelText="Cancel"
+          okButtonProps={{
+            loading: loadingDeletePost,
+          }}
         >
           <DeleteOutlined data-testid="icon-delete-post" />
         </Popconfirm>,
       ]}
+      data-testid="card-post"
     >
       <Paragraph
         ellipsis={{

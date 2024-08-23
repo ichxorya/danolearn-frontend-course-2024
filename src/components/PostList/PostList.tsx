@@ -1,25 +1,23 @@
-import { Button, List, Modal, Pagination } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import PostCard from "../PostCard";
-import { usePosts } from "../../hooks/post";
-import { useState} from "react";
-import PostForm from "../PostForm";
-import { notification } from "antd";
-import { Post } from "../../types/post";
+import { Button, List, Modal, notification } from "antd";
+import PostCard from "components/PostCard";
+import PostForm from "components/PostForm";
+import { usePosts } from "hooks/post";
+import { useState } from "react";
 
 const PostList: React.FC = () => {
-  const { posts, loadingPosts, handleGetPosts } = usePosts();
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [postToEditData, setPostToEditData] = useState<Post>();
+  const { posts, pagination, loadingPosts, handleGetPosts } = usePosts();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [postToEditId, setPostToEditId] = useState<number>();
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
+    setPostToEditId(undefined);
     setIsModalOpen(false);
   };
-
 
   const handleAfterSuccess = (isDeleted?: boolean) => {
     if (!isDeleted) closeModal();
@@ -27,15 +25,29 @@ const PostList: React.FC = () => {
       message: "Success",
       description: isDeleted
         ? "Delete post successfully!"
-        : postToEditData
+        : postToEditId
         ? "Add new post successfully!"
         : "Update post successfully!",
     });
+
+    let newQuery; // Default query (go to first page)
+
+    // In case edit or delete, keep current query
+    if (postToEditId || isDeleted) {
+      newQuery = { page: pagination.current, pageSize: pagination.pageSize };
+    }
+
+    handleGetPosts(newQuery);
   };
 
-  const handleEditPost = (post: Post) => {
-    setPostToEditData(post);
+  const handleEditPost = (id: number) => {
+    setPostToEditId(id);
     showModal();
+  };
+
+  const handleChangePage = (page: number, pageSize: number) => {
+    const newQuery = { page, pageSize };
+    handleGetPosts(newQuery);
   };
 
   return (
@@ -49,7 +61,7 @@ const PostList: React.FC = () => {
         Add New Post
       </Button>
       <Modal
-        title={postToEditData ? "Edit Post" : "Add New Post"}
+        title={postToEditId ? "Edit Post" : "Add New Post"}
         open={isModalOpen}
         footer={null}
         onCancel={closeModal}
@@ -57,15 +69,15 @@ const PostList: React.FC = () => {
         width={800}
       >
         <PostForm
-          postToEditData={postToEditData}
+          postToEditId={postToEditId}
           handleAfterSuccess={handleAfterSuccess}
-          handleGetPosts={handleGetPosts}
         />
       </Modal>
       <List
         pagination={{
           align: "center",
-          defaultPageSize: 12,
+          onChange: handleChangePage,
+          ...pagination,
         }}
         grid={{
           gutter: 16,
@@ -84,7 +96,6 @@ const PostList: React.FC = () => {
               handleAfterSuccess={handleAfterSuccess}
               handleEditPost={handleEditPost}
               post={post}
-              handleGetPosts={handleGetPosts}
             />
           </List.Item>
         )}

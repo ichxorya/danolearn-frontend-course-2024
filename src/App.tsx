@@ -1,6 +1,6 @@
 import { Typography } from "antd";
 import "./App.css";
-import PostList from "./components/PostList";
+import PostList from "components/PostList";
 
 const { Title } = Typography;
 
