@@ -12,4 +12,18 @@ export const getPostsMock = {
     },
   ],
   total: 2,
+
+  addPost: jest.fn((newPost) => {
+    getPostsMock.posts.push(newPost);
+    getPostsMock.total += 1;
+  }),
 };
+
+export const createPostMock = jest.fn(async (data) => {
+  const newPost = {
+    id: getPostsMock.total + 1,
+    ...data,
+  };
+  getPostsMock.addPost(newPost);
+  return newPost;
+});
