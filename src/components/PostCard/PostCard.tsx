@@ -6,6 +6,9 @@ import { Post } from "types/post";
 import "./PostCard.css";
 
 interface PostCardProps {
+  /**
+   * The post data to be displayed.
+   */
   post: Post;
   handleEditPost: (id: number) => void;
   handleAfterSuccess: (isDeleted?: boolean) => void;
@@ -13,6 +16,9 @@ interface PostCardProps {
 
 const { Paragraph } = Typography;
 
+/**
+ * UI component for displaying a post card.
+ */
 const PostCard: React.FC<PostCardProps> = (props) => {
   const { post, handleEditPost, handleAfterSuccess } = props;
   const [loadingDeletePost, setLoadingDeletePost] = useState<boolean>(false);
